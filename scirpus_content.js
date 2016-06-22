@@ -4,6 +4,11 @@ const webBrowser = chrome || webBrowser
 
 const ampLinkElement = document.querySelector(`link[rel="amphtml"][href]`)
 
+const isAMPPage = () => {
+  const html = document.documentElement
+  return html.hasAttribute('⚡') || html.hasAttribute('amp')
+}
+
 const hasAMPPage = () => {
   return !!ampLinkElement
 }
@@ -29,17 +34,29 @@ const getAMPCacheURL = () => {
   return `${ampCacheURLPrefix}${!!secure ? 's/': ''}${ampURL.replace(/https?:\/\//, '')}`
 }
 
+const getOriginalPageURL = () => {
+  const canonicalLinkElement = document.querySelector(`link[rel="canonical"][href]`)
+  if (isAMPPage() && !!canonicalLinkElement) {
+    return canonicalLinkElement.href
+  }
+  else {
+    return null
+  }
+}
+
 // message to background page
 const pageInfo = {
   pageURL: location.href,
   hasAMPPage: hasAMPPage(),
   ampPageURL: getAMPPageURL(),
   ampCacheURL: getAMPCacheURL(),
+  isAMPPage: isAMPPage(),
+  originalPageURL: getOriginalPageURL(),
 }
 webBrowser.runtime.sendMessage(pageInfo)
 
 webBrowser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message === 'get-amp-url') {
+  if (message === 'get-page-info') {
     sendResponse(pageInfo)
   }
 })
