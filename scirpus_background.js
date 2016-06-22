@@ -14,3 +14,11 @@ webBrowser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     webBrowser.pageAction.hide(tabID)
   }
 })
+
+webBrowser.pageAction.onClicked.addListener(tab => {
+  const tabID = tab.id
+  webBrowser.tabs.sendMessage(tabID, 'get-amp-url', response => {
+    const ampURL = response.ampCacheURL
+    webBrowser.tabs.update(tabID, {url: ampURL})
+  })
+})
