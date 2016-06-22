@@ -1,0 +1,33 @@
+{
+  "manifest_version": 2,
+  "name": "Scirpus",
+  "version": "0.1.0",
+
+  "description": "AMPlify your browsing experience.",
+  "icons": {
+    "48": "icons/48.png",
+    "96": "icons/96.png"
+  },
+
+  "permissions": [
+    "activeTab"
+  ],
+
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["scirpus_content.js"]
+    }
+  ],
+
+  "page_action": {
+    "default_icon": {
+      "19": "icons/19.png",
+      "38": "icons/38.png"
+    }
+  },
+
+  "background": {
+    "scripts": ["scirpus_background.js"]
+  }
+}
