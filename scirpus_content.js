@@ -53,10 +53,11 @@ const pageInfo = {
   isAMPPage: isAMPPage(),
   originalPageURL: getOriginalPageURL(),
 }
-webBrowser.runtime.sendMessage(pageInfo)
+webBrowser.runtime.sendMessage({name: 'page-info', data: pageInfo})
 
+// message from background page
 webBrowser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message === 'get-page-info') {
-    sendResponse(pageInfo)
+  if (message.name === 'get-page-info') {
+    sendResponse({name: 'page-info', data: pageInfo})
   }
 })
