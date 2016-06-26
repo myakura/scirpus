@@ -44,20 +44,23 @@ const getOriginalPageURL = () => {
   }
 }
 
-// message to background page
-const pageInfo = {
-  pageURL: location.href,
-  hasAMPPage: hasAMPPage(),
-  ampPageURL: getAMPPageURL(),
-  ampCacheURL: getAMPCacheURL(),
-  isAMPPage: isAMPPage(),
-  originalPageURL: getOriginalPageURL(),
+const getPageInfo = () => {
+  return {
+    pageURL: location.href,
+    hasAMPPage: hasAMPPage(),
+    ampPageURL: getAMPPageURL(),
+    ampCacheURL: getAMPCacheURL(),
+    isAMPPage: isAMPPage(),
+    originalPageURL: getOriginalPageURL(),
+  }
 }
-webBrowser.runtime.sendMessage({name: 'page-info', data: pageInfo})
+
+// message to background page
+webBrowser.runtime.sendMessage({name: 'page-info', data: getPageInfo()})
 
 // message from background page
 webBrowser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.name === 'get-page-info') {
-    sendResponse({name: 'page-info', data: pageInfo})
+    sendResponse({name: 'page-info', data: getPageInfo()})
   }
 })
