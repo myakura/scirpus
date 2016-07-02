@@ -2,8 +2,7 @@
 
 const webBrowser = chrome || browser
 
-// message from content script
-webBrowser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+const updatePageAction = (message, sender) => {
   const tabID = sender.tab.id
   if (message.name === 'page-info') {
     if (message.data.hasAMPPage) {
@@ -19,6 +18,11 @@ webBrowser.runtime.onMessage.addListener((message, sender, sendResponse) => {
       webBrowser.pageAction.hide(tabID)
     }
   }
+}
+
+// message from content script
+webBrowser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  updatePageAction(message, sender)
 })
 
 webBrowser.pageAction.onClicked.addListener(tab => {
