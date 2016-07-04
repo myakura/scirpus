@@ -1,7 +1,5 @@
 'use strict'
 
-const webBrowser = chrome || webBrowser
-
 const ampLinkElement = document.querySelector(`link[rel="amphtml"][href]`)
 
 const isAMPPage = () => {
@@ -56,10 +54,10 @@ const getPageInfo = () => {
 }
 
 // message to background page
-webBrowser.runtime.sendMessage({name: 'page-info', data: getPageInfo()})
+chrome.runtime.sendMessage({name: 'page-info', data: getPageInfo()})
 
 // message from background page
-webBrowser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.name === 'get-page-info') {
     sendResponse({name: 'page-info', data: getPageInfo()})
   }
