@@ -34,3 +34,17 @@ chrome.pageAction.onClicked.addListener(tab => {
     }
   })
 })
+
+chrome.tabs.onActivated.addListener(activeInfo => {
+  // chrome.tabs.sendMessage(activeInfo.tabId, {name: 'get-page-info'}, response => {
+  //   console.log('requested page info')
+  // })
+})
+
+chrome.tabs.onUpdated.addListener((tabID, changeInfo, tab) => {
+  if (!!changeInfo.url) {
+    chrome.tabs.sendMessage(tabID, {name: 'get-page-info'}, response => {
+      console.log('requested page info')
+    })
+  }
+})
