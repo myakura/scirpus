@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Scirpus",
-  "version": "0.3.4",
+  "version": "0.3.5",
 
   "description": "AMPlify your browsing experience.",
   "icons": {
@@ -28,6 +28,7 @@
   },
 
   "background": {
-    "scripts": ["scirpus_background.js"]
+    "scripts": ["scirpus_background.js"],
+    "persistent": false
   }
 }
