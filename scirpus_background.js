@@ -1,7 +1,6 @@
 'use strict'
 
-const updatePageAction = (message, sender) => {
-  const tabID = sender.tab.id
+const updatePageAction = (message, tabID) => {
   if (message.name === 'page-info') {
     if (message.data.hasAMPPage) {
       chrome.pageAction.setTitle({tabId: tabID, title: 'AMP page found for this page ⚡'})
@@ -18,10 +17,15 @@ const updatePageAction = (message, sender) => {
   }
 }
 
-// message from content script
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  updatePageAction(message, sender)
-})
+const updateContextMenu = (message) => {
+  chrome.contextMenus.removeAll()
+  if (message.data.hasAMPPage) {
+    chrome.contextMenus.create({id: 'scirpus-hasamp', title: 'Go to AMP page', enabled: true})
+  }
+  else if (message.data.isAMPPage) {
+    chrome.contextMenus.create({id: 'scirpus-isamp', title: 'Go to regular (non-AMP) page', enabled: true})
+  }
+}
 
 chrome.pageAction.onClicked.addListener(tab => {
   const tabID = tab.id
@@ -35,16 +39,34 @@ chrome.pageAction.onClicked.addListener(tab => {
   })
 })
 
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  const tabID = tab.id
+  chrome.tabs.sendMessage(tabID, {name: 'get-page-info'}, response => {
+    if (info.menuItemId === 'scirpus-hasamp') {
+      chrome.tabs.update(tabID, {url: response.data.ampCacheURL})
+    }
+    else if (info.menuItemId === 'scirpus-isamp') {
+      chrome.tabs.update(tabID, {url: response.data.originalPageURL})
+    }
+  })
+})
+
 chrome.tabs.onActivated.addListener(activeInfo => {
-  // chrome.tabs.sendMessage(activeInfo.tabId, {name: 'get-page-info'}, response => {
-  //   console.log('requested page info')
-  // })
+  const tabID = activeInfo.tabId
+  chrome.tabs.sendMessage(tabID, {name: 'get-page-info'}, response => {
+    updatePageAction(response, tabID)
+    updateContextMenu(response)
+  })
 })
 
 chrome.tabs.onUpdated.addListener((tabID, changeInfo, tab) => {
-  if (!!changeInfo.url) {
+  // remove out-of-date context menus for pages that take time to load
+   chrome.contextMenus.removeAll()
+
+  if (changeInfo.status === 'complete') {
     chrome.tabs.sendMessage(tabID, {name: 'get-page-info'}, response => {
-      console.log('requested page info')
+      updatePageAction(response, tabID)
+      updateContextMenu(response)
     })
   }
 })

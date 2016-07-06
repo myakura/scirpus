@@ -55,9 +55,6 @@ class ScirpusContent {
 // initialize
 const scirpusContent = new ScirpusContent()
 
-// message to background page
-chrome.runtime.sendMessage({name: 'page-info', data: scirpusContent.getPageInfo()})
-
 // message from background page
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.name === 'get-page-info') {
