@@ -1,7 +1,7 @@
 'use strict'
 
 class ScirpusContent {
-  getAMPLinkElement () {
+  get ampLinkElement () {
     return document.querySelector(`link[rel="amphtml"][href]`)
   }
   isAMPPage () {
@@ -9,20 +9,20 @@ class ScirpusContent {
     return htmlElement.hasAttribute('⚡') || htmlElement.hasAttribute('amp')
   }
   hasAMPPage () {
-    const ampLinkElement = this.getAMPLinkElement()
+    const ampLinkElement = this.ampLinkElement
     return !!ampLinkElement
   }
-  getAMPPageURL () {
+  get ampPageURL () {
     if (!this.hasAMPPage()) {
       return null
     }
-    return this.getAMPLinkElement().href
+    return this.ampLinkElement.href
   }
-  getAMPCacheURL () {
+  get ampCacheURL () {
     if (!this.hasAMPPage()) {
       return null
     }
-    const ampURL = this.getAMPPageURL()
+    const ampURL = this.ampPageURL
     const ampCacheURLPrefix = 'https://cdn.ampproject.org/c/'
     if (ampURL.startsWith(ampCacheURLPrefix)) {
       return ampURL
@@ -31,7 +31,7 @@ class ScirpusContent {
     const secure = (new URL(ampURL)).protocol === 'https:'
     return `${ampCacheURLPrefix}${!!secure ? 's/': ''}${ampURL.replace(/https?:\/\//, '')}`
   }
-  getOriginalPageURL () {
+  get originalPageURL () {
     const canonicalLinkElement = document.querySelector(`link[rel="canonical"][href]`)
     if (this.isAMPPage() && !!canonicalLinkElement) {
       return canonicalLinkElement.href
@@ -40,14 +40,14 @@ class ScirpusContent {
       return null
     }
   }
-  getPageInfo () {
+  get pageInfo () {
     return {
       pageURL: location.href,
       hasAMPPage: this.hasAMPPage(),
-      ampPageURL: this.getAMPPageURL(),
-      ampCacheURL: this.getAMPCacheURL(),
+      ampPageURL: this.ampPageURL,
+      ampCacheURL: this.ampCacheURL,
       isAMPPage: this.isAMPPage(),
-      originalPageURL: this.getOriginalPageURL(),
+      originalPageURL: this.originalPageURL,
     }
   }
 }
@@ -58,6 +58,6 @@ const scirpusContent = new ScirpusContent()
 // message from background page
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.name === 'get-page-info') {
-    sendResponse({name: 'page-info', data: scirpusContent.getPageInfo()})
+    sendResponse({name: 'page-info', data: scirpusContent.pageInfo})
   }
 })
