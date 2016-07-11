@@ -59,5 +59,6 @@ const scirpusContent = new ScirpusContent()
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.name === 'get-page-info') {
     sendResponse({name: 'page-info', data: scirpusContent.pageInfo})
+    sendResponse({name: 'page-info', data: pageInfo})
   }
 })
