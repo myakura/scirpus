@@ -58,7 +58,10 @@ const scirpusContent = new ScirpusContent()
 // message from background page
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.name === 'get-page-info') {
-    sendResponse({name: 'page-info', data: scirpusContent.pageInfo})
+    let pageInfo = null
+    if (scirpusContent.hasAMPPage() || scirpusContent.isAMPPage()) {
+      pageInfo = scirpusContent.pageInfo
+    }
     sendResponse({name: 'page-info', data: pageInfo})
   }
 })
