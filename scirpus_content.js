@@ -31,7 +31,7 @@ class ScirpusContent {
     const secure = (new URL(ampURL)).protocol === 'https:'
     return `${ampCacheURLPrefix}${!!secure ? 's/': ''}${ampURL.replace(/https?:\/\//, '')}`
   }
-  get originalPageURL () {
+  get canonicalURL () {
     const canonicalLinkElement = document.querySelector(`link[rel="canonical"][href]`)
     if (this.isAMPPage() && !!canonicalLinkElement) {
       return canonicalLinkElement.href
@@ -47,7 +47,7 @@ class ScirpusContent {
       ampPageURL: this.ampPageURL,
       ampCacheURL: this.ampCacheURL,
       isAMPPage: this.isAMPPage(),
-      originalPageURL: this.originalPageURL,
+      canonicalURL: this.canonicalURL,
     }
   }
 }

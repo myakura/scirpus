@@ -32,7 +32,7 @@ chrome.pageAction.onClicked.addListener(tab => {
       chrome.tabs.update(tabID, {url: response.data.ampCacheURL})
     }
     else if (response.data.isAMPPage) {
-      chrome.tabs.update(tabID, {url: response.data.originalPageURL})
+      chrome.tabs.update(tabID, {url: response.data.canonicalURL})
     }
   })
 })
@@ -44,7 +44,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       chrome.tabs.update(tabID, {url: response.data.ampCacheURL})
     }
     else if (info.menuItemId === 'scirpus-isamp') {
-      chrome.tabs.update(tabID, {url: response.data.originalPageURL})
+      chrome.tabs.update(tabID, {url: response.data.canonicalURL})
     }
   })
 })
