@@ -1,5 +1,18 @@
 'use strict'
 
+const getAMPCacheURL = (ampURL) => {
+  if (!ampURL.startsWith('http')) {
+    throw new Error('Invalid AMP URL: it does not start with HTTP(S)')
+  }
+  let ampCacheURLPrefix = 'https://cdn.ampproject.org/c/'
+  if (ampURL.startsWith(ampCacheURLPrefix)) {
+    return ampURL
+  }
+  // for HTTPS AMP pages, the prefix has additional `s/`
+  ampCacheURLPrefix += (ampURL.startsWith('https:')) ? 's/' : ''
+  return ampURL.replace(/https?:\/\//, ampCacheURLPrefix)
+}
+
 const updatePageAction = (message, tabID) => {
   if (message.data.hasAMPPage) {
     chrome.pageAction.setTitle({tabId: tabID, title: 'AMP page found for this page ⚡'})
@@ -29,7 +42,7 @@ chrome.pageAction.onClicked.addListener(tab => {
   const tabID = tab.id
   chrome.tabs.sendMessage(tabID, {name: 'get-page-info'}, response => {
     if (response.data.hasAMPPage) {
-      chrome.tabs.update(tabID, {url: response.data.ampCacheURL})
+      chrome.tabs.update(tabID, {url: getAMPCacheURL(response.data.ampPageURL)})
     }
     else if (response.data.isAMPPage) {
       chrome.tabs.update(tabID, {url: response.data.canonicalURL})
@@ -41,7 +54,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   const tabID = tab.id
   chrome.tabs.sendMessage(tabID, {name: 'get-page-info'}, response => {
     if (info.menuItemId === 'scirpus-hasamp') {
-      chrome.tabs.update(tabID, {url: response.data.ampCacheURL})
+      chrome.tabs.update(tabID, {url: getAMPCacheURL(response.data.ampPageURL)})
     }
     else if (info.menuItemId === 'scirpus-isamp') {
       chrome.tabs.update(tabID, {url: response.data.canonicalURL})
