@@ -42,7 +42,6 @@ class ScirpusContent {
   }
   get pageInfo () {
     return {
-      pageURL: location.href,
       hasAMPPage: this.hasAMPPage(),
       ampPageURL: this.ampPageURL,
       ampCacheURL: this.ampCacheURL,
