@@ -20,7 +20,7 @@ class ScirpusContent {
   }
   get canonicalURL () {
     const canonicalLinkElement = document.querySelector(`link[rel="canonical"][href]`)
-    if (this.isAMPPage() && !!canonicalLinkElement) {
+    if (!!canonicalLinkElement && this.isAMPPage()) {
       return canonicalLinkElement.href
     }
     else {
