@@ -4,23 +4,23 @@ class ScirpusContent {
   get ampLinkElement () {
     return document.querySelector(`link[rel="amphtml"][href]`)
   }
-  isAMPPage () {
+  isAMP () {
     const htmlElement = document.documentElement
     return htmlElement.hasAttribute('⚡') || htmlElement.hasAttribute('amp')
   }
-  hasAMPPage () {
+  hasAMP () {
     const ampLinkElement = this.ampLinkElement
     return !!ampLinkElement
   }
-  get ampPageURL () {
-    if (!this.hasAMPPage()) {
+  get ampURL () {
+    if (!this.hasAMP()) {
       return null
     }
     return this.ampLinkElement.href
   }
   get canonicalURL () {
     const canonicalLinkElement = document.querySelector(`link[rel="canonical"][href]`)
-    if (!!canonicalLinkElement && this.isAMPPage()) {
+    if (!!canonicalLinkElement && this.isAMP()) {
       return canonicalLinkElement.href
     }
     else {
@@ -29,10 +29,10 @@ class ScirpusContent {
   }
   get pageType () {
     let type = ''
-    if (this.hasAMPPage()) {
+    if (this.hasAMP()) {
       type = 'hasamp'
     }
-    if (this.isAMPPage()) {
+    if (this.isAMP()) {
       type = 'isamp'
     }
     return type
@@ -40,7 +40,7 @@ class ScirpusContent {
   get ampInfo () {
     return {
       pageType: this.pageType,
-      ampPageURL: this.ampPageURL,
+      ampURL: this.ampURL,
       canonicalURL: this.canonicalURL,
     }
   }
@@ -53,7 +53,7 @@ const scirpusContent = new ScirpusContent()
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.name === 'get-amp-info') {
     let ampInfo = null
-    if (scirpusContent.hasAMPPage() || scirpusContent.isAMPPage()) {
+    if (scirpusContent.hasAMP() || scirpusContent.isAMP()) {
       ampInfo = scirpusContent.ampInfo
     }
     sendResponse({name: 'amp-info', data: ampInfo})

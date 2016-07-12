@@ -4,13 +4,13 @@ const getAMPCacheURL = (ampURL) => {
   if (!ampURL.startsWith('http')) {
     throw new Error('Invalid AMP URL: it does not start with HTTP(S)')
   }
-  let ampCacheURLPrefix = 'https://cdn.ampproject.org/c/'
-  if (ampURL.startsWith(ampCacheURLPrefix)) {
+  let cacheURLPrefix = 'https://cdn.ampproject.org/c/'
+  if (ampURL.startsWith(cacheURLPrefix)) {
     return ampURL
   }
   // for HTTPS AMP pages, the prefix has additional `s/`
-  ampCacheURLPrefix += (ampURL.startsWith('https:')) ? 's/' : ''
-  return ampURL.replace(/https?:\/\//, ampCacheURLPrefix)
+  cacheURLPrefix += (ampURL.startsWith('https:')) ? 's/' : ''
+  return ampURL.replace(/https?:\/\//, cacheURLPrefix)
 }
 
 const updatePageAction = (ampInfo, tabID) => {
@@ -56,7 +56,7 @@ chrome.pageAction.onClicked.addListener(tab => {
     let updateURL = ''
     switch (ampInfo.pageType) {
       case 'hasamp':
-        updateURL = getAMPCacheURL(ampInfo.ampPageURL)
+        updateURL = getAMPCacheURL(ampInfo.ampURL)
         break
       case 'isamp':
         updateURL = ampInfo.canonicalURL
@@ -73,7 +73,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     let updateURL = ''
     switch (info.menuItemId) {
       case 'scirpus-hasamp':
-        updateURL = getAMPCacheURL(ampInfo.ampPageURL)
+        updateURL = getAMPCacheURL(ampInfo.ampURL)
         break
       case 'scirpus-isamp':
         updateURL = ampInfo.canonicalURL
