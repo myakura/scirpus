@@ -27,11 +27,20 @@ class ScirpusContent {
       return null
     }
   }
-  get pageInfo () {
+  get pageType () {
+    let type = ''
+    if (this.hasAMPPage()) {
+      type = 'hasamp'
+    }
+    if (this.isAMPPage()) {
+      type = 'isamp'
+    }
+    return type
+  }
+  get ampInfo () {
     return {
-      hasAMPPage: this.hasAMPPage(),
+      pageType: this.pageType,
       ampPageURL: this.ampPageURL,
-      isAMPPage: this.isAMPPage(),
       canonicalURL: this.canonicalURL,
     }
   }
@@ -42,11 +51,11 @@ const scirpusContent = new ScirpusContent()
 
 // message from background page
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.name === 'get-page-info') {
-    let pageInfo = null
+  if (message.name === 'get-amp-info') {
+    let ampInfo = null
     if (scirpusContent.hasAMPPage() || scirpusContent.isAMPPage()) {
-      pageInfo = scirpusContent.pageInfo
+      ampInfo = scirpusContent.ampInfo
     }
-    sendResponse({name: 'page-info', data: pageInfo})
+    sendResponse({name: 'amp-info', data: ampInfo})
   }
 })
