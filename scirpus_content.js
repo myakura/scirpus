@@ -1,61 +1,62 @@
-'use strict'
+'use strict';
 
 class ScirpusContent {
-  get ampLinkElement () {
-    return document.querySelector(`link[rel="amphtml"][href]`)
+  get ampLinkElement() {
+    return document.querySelector(`link[rel="amphtml"][href]`);
   }
-  isAMP () {
-    const htmlElement = document.documentElement
-    return htmlElement.hasAttribute('⚡') || htmlElement.hasAttribute('amp')
+  isAMP() {
+    const htmlElement = document.documentElement;
+    return htmlElement.hasAttribute('⚡') || htmlElement.hasAttribute('amp');
   }
-  hasAMP () {
-    const ampLinkElement = this.ampLinkElement
-    return !!ampLinkElement
+  hasAMP() {
+    const ampLinkElement = this.ampLinkElement;
+    return !!ampLinkElement;
   }
-  get ampURL () {
+  get ampURL() {
     if (!this.hasAMP()) {
-      return null
+      return null;
     }
-    return this.ampLinkElement.href
+    return this.ampLinkElement.href;
   }
-  get canonicalURL () {
-    const canonicalLinkElement = document.querySelector(`link[rel="canonical"][href]`)
+  get canonicalURL() {
+    const canonicalLinkElement = document.querySelector(
+      `link[rel="canonical"][href]`,
+    );
     if (!!canonicalLinkElement && this.isAMP()) {
-      return canonicalLinkElement.href
-    }
-    else {
-      return null
+      return canonicalLinkElement.href;
+    } else {
+      return null;
     }
   }
-  get pageType () {
-    let type = ''
+  get pageType() {
+    let type = '';
     if (this.hasAMP()) {
-      type = 'hasamp'
+      type = 'hasamp';
     }
     if (this.isAMP()) {
-      type = 'isamp'
+      type = 'isamp';
     }
-    return type
+    return type;
   }
-  get ampInfo () {
+  get ampInfo() {
     return {
       pageType: this.pageType,
       ampURL: this.ampURL,
       canonicalURL: this.canonicalURL,
-    }
+    };
   }
 }
 
 // initialize
-const scirpusContent = new ScirpusContent()
+const scirpusContent = new ScirpusContent();
 
 // message from background page
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.name === 'get-amp-info') {
-    let ampInfo = null
+    let ampInfo = null;
     if (scirpusContent.hasAMP() || scirpusContent.isAMP()) {
-      ampInfo = scirpusContent.ampInfo
+      ampInfo = scirpusContent.ampInfo;
     }
-    sendResponse({name: 'amp-info', data: ampInfo})
+    sendResponse({ name: 'amp-info', data: ampInfo });
   }
-})
+});
