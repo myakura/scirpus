@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Scirpus",
-  "version": "0.5.3",
+  "version": "0.5.4",
 
   "description": "AMPlify your browsing experience.",
   "icons": {
@@ -23,8 +23,8 @@
 
   "browser_action": {
     "default_icon": {
-      "19": "icons/19.png",
-      "38": "icons/38.png"
+      "19": "icons/19-disabled.png",
+      "38": "icons/38-disabled.png"
     }
   },
 
