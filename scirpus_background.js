@@ -25,9 +25,23 @@ const updateBrowserAction = (ampInfo, tabID) => {
         break;
     }
     chrome.browserAction.setTitle({ tabId: tabID, title: browserActionTitle });
+    chrome.browserAction.setIcon({
+      tabId: tabID,
+      path: {
+        '19': 'icons/19.png',
+        '38': 'icons/38.png',
+      },
+    });
     chrome.browserAction.enable();
   } else {
     chrome.browserAction.setTitle({ tabId: tabID, title: browserActionTitle });
+    chrome.browserAction.setIcon({
+      tabId: tabID,
+      path: {
+        '19': 'icons/19-disabled.png',
+        '38': 'icons/38-disabled.png',
+      },
+    });
     chrome.browserAction.disable();
   }
 };
