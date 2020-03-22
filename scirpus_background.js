@@ -14,14 +14,14 @@ const getAMPCacheURL = ampURL => {
 };
 
 const updateBrowserAction = (ampInfo, tabID) => {
-  let browserActionTitle = 'No AMP page found for this page 😫';
+  let browserActionTitle = 'AMP not found 😫';
   if (ampInfo) {
     switch (ampInfo.pageType) {
       case 'hasamp':
-        browserActionTitle = 'AMP page found for this page ⚡';
+        browserActionTitle = 'AMP found ⚡';
         break;
       case 'isamp':
-        browserActionTitle = 'This is an AMP page ⚡';
+        browserActionTitle = 'This is an AMP ⚡';
         break;
     }
     chrome.browserAction.setTitle({ tabId: tabID, title: browserActionTitle });
