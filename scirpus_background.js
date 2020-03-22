@@ -13,23 +13,23 @@ const getAMPCacheURL = (ampURL) => {
   return ampURL.replace(/https?:\/\//, cacheURLPrefix)
 }
 
-const updatePageAction = (ampInfo, tabID) => {
-  let pageActionTitle = 'No AMP page found for this page 😫'
+const updateBrowserAction = (ampInfo, tabID) => {
+  let browserActionTitle = 'No AMP page found for this page 😫'
   if (ampInfo) {
     switch (ampInfo.pageType) {
       case 'hasamp':
-        pageActionTitle = 'AMP page found for this page ⚡'
+        browserActionTitle = 'AMP page found for this page ⚡'
         break
       case 'isamp':
-        pageActionTitle = 'This is an AMP page ⚡'
+        browserActionTitle = 'This is an AMP page ⚡'
         break
     }
-    chrome.pageAction.setTitle({tabId: tabID, title: pageActionTitle})
-    chrome.pageAction.show(tabID)
+    chrome.browserAction.setTitle({tabId: tabID, title: browserActionTitle})
+    chrome.browserAction.enable()
   }
   else {
-    chrome.pageAction.setTitle({tabId: tabID, title: pageActionTitle})
-    chrome.pageAction.hide(tabID)
+    chrome.browserAction.setTitle({tabId: tabID, title: browserActionTitle})
+    chrome.browserAction.disable()
   }
 }
 
@@ -49,7 +49,7 @@ const updateContextMenu = (ampInfo) => {
   }
 }
 
-chrome.pageAction.onClicked.addListener(tab => {
+chrome.browserAction.onClicked.addListener(tab => {
   const tabID = tab.id
   chrome.tabs.sendMessage(tabID, {name: 'get-amp-info'}, response => {
     const ampInfo = response.data
@@ -86,7 +86,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 chrome.tabs.onActivated.addListener(activeInfo => {
   const tabID = activeInfo.tabId
   chrome.tabs.sendMessage(tabID, {name: 'get-amp-info'}, response => {
-    updatePageAction(response.data, tabID)
+    updateBrowserAction(response.data, tabID)
     updateContextMenu(response.data)
   })
 })
@@ -97,7 +97,7 @@ chrome.tabs.onUpdated.addListener((tabID, changeInfo, tab) => {
 
   if (changeInfo.status === 'complete') {
     chrome.tabs.sendMessage(tabID, {name: 'get-amp-info'}, response => {
-      updatePageAction(response.data, tabID)
+      updateBrowserAction(response.data, tabID)
       updateContextMenu(response.data)
     })
   }
