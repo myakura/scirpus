@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Scirpus",
-  "version": "0.5.4",
+  "version": "0.5.5",
 
   "description": "AMPlify your browsing experience.",
   "icons": {
@@ -16,7 +16,23 @@
 
   "content_scripts": [
     {
-      "matches": ["*://*/*"],
+      "matches": ["https://*/*", "http://*/*"],
+      "exclude_matches": [
+        "https://www.google.com/*",
+        "https://www.google.co.jp/*",
+        "https://www.amazon.com/*",
+        "https://www.amazon.co.jp/*",
+        "https://www.facebook.com/*",
+        "https://twitter.com/*",
+        "https://youtube.com/*",
+        "https://*.wikipedia.org/*"
+      ],
+      "exclude_globs": [
+        "*.js", "*.css", "*.txt",
+        "*.png", "*.jpg", "*.jpeg", "*.webp",
+        "*.mp4", "*.webm",
+        "*.pdf"
+      ],
       "js": ["scirpus_content.js"]
     }
   ],
