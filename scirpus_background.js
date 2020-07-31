@@ -13,7 +13,18 @@ const getAMPCacheURL = ampURL => {
   return ampURL.replace(/https?:\/\//, cacheURLPrefix);
 };
 
-const updateBrowserAction = (ampInfo, tabID) => {
+function updateBrowserAction({ tabId, enabled = false, title = `` }) {
+  const method = enabled ? `enable` : `disable`;
+  const iconPath = enabled
+    ? { '19': 'icons/19.png', '38': 'icons/38.png' }
+    : { '19': 'icons/19-disabled.png', '38': 'icons/38-disabled.png' };
+
+  chrome.browserAction[method](tabId);
+  chrome.browserAction.setIcon({ tabId, path: iconPath });
+  chrome.browserAction.setTitle({ tabId, title });
+}
+
+function getBrowserActionTitle(ampInfo) {
   let browserActionTitle = 'AMP not found 😫';
   if (ampInfo) {
     switch (ampInfo.pageType) {
@@ -24,27 +35,9 @@ const updateBrowserAction = (ampInfo, tabID) => {
         browserActionTitle = 'This is an AMP ⚡';
         break;
     }
-    chrome.browserAction.setTitle({ tabId: tabID, title: browserActionTitle });
-    chrome.browserAction.setIcon({
-      tabId: tabID,
-      path: {
-        '19': 'icons/19.png',
-        '38': 'icons/38.png',
-      },
-    });
-    chrome.browserAction.enable();
-  } else {
-    chrome.browserAction.setTitle({ tabId: tabID, title: browserActionTitle });
-    chrome.browserAction.setIcon({
-      tabId: tabID,
-      path: {
-        '19': 'icons/19-disabled.png',
-        '38': 'icons/38-disabled.png',
-      },
-    });
-    chrome.browserAction.disable();
   }
-};
+  return browserActionTitle;
+}
 
 const updateContextMenu = ampInfo => {
   chrome.contextMenus.removeAll();
@@ -107,7 +100,13 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 chrome.tabs.onActivated.addListener(activeInfo => {
   const tabID = activeInfo.tabId;
   chrome.tabs.sendMessage(tabID, { name: 'get-amp-info' }, response => {
-    updateBrowserAction(response.data, tabID);
+    const ampInfo = response.data;
+    const browserActionTitle = getBrowserActionTitle(ampInfo);
+    updateBrowserAction({
+      tabid: tabID,
+      enabled: !!ampInfo.pageType,
+      title: browserActionTitle,
+    });
     updateContextMenu(response.data);
   });
 });
@@ -118,7 +117,13 @@ chrome.tabs.onUpdated.addListener((tabID, changeInfo, tab) => {
 
   if (changeInfo.status === 'complete') {
     chrome.tabs.sendMessage(tabID, { name: 'get-amp-info' }, response => {
-      updateBrowserAction(response.data, tabID);
+      const ampInfo = response.data;
+      const browserActionTitle = getBrowserActionTitle(ampInfo);
+      updateBrowserAction({
+        tabid: tabID,
+        enabled: !!ampInfo.pageType,
+        title: browserActionTitle,
+      });
       updateContextMenu(response.data);
     });
   }
