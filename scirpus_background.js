@@ -64,8 +64,8 @@ function updateContextMenu(ampInfo) {
 }
 
 chrome.browserAction.onClicked.addListener(tab => {
-  const tabID = tab.id;
-  chrome.tabs.sendMessage(tabID, { name: 'get-amp-info' }, response => {
+  const tabId = tab.id;
+  chrome.tabs.sendMessage(tabId, { name: 'get-amp-info' }, response => {
     const ampInfo = response.data;
     let updateURL = '';
     switch (ampInfo.pageType) {
@@ -76,13 +76,13 @@ chrome.browserAction.onClicked.addListener(tab => {
         updateURL = ampInfo.canonicalURL;
         break;
     }
-    !!updateURL && chrome.tabs.update(tabID, { url: updateURL });
+    !!updateURL && chrome.tabs.update(tabId, { url: updateURL });
   });
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  const tabID = tab.id;
-  chrome.tabs.sendMessage(tabID, { name: 'get-amp-info' }, response => {
+  const tabId = tab.id;
+  chrome.tabs.sendMessage(tabId, { name: 'get-amp-info' }, response => {
     const ampInfo = response.data;
     let updateURL = '';
     switch (info.menuItemId) {
@@ -93,17 +93,17 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         updateURL = ampInfo.canonicalURL;
         break;
     }
-    !!updateURL && chrome.tabs.update(tabID, { url: updateURL });
+    !!updateURL && chrome.tabs.update(tabId, { url: updateURL });
   });
 });
 
 chrome.tabs.onActivated.addListener(activeInfo => {
-  const tabID = activeInfo.tabId;
-  chrome.tabs.sendMessage(tabID, { name: 'get-amp-info' }, response => {
+  const tabId = activeInfo.tabId;
+  chrome.tabs.sendMessage(tabId, { name: 'get-amp-info' }, response => {
     const ampInfo = response.data;
     const browserActionTitle = getBrowserActionTitle(ampInfo);
     updateBrowserAction({
-      tabid: tabID,
+      tabId,
       enabled: !!ampInfo.pageType,
       title: browserActionTitle,
     });
@@ -111,16 +111,16 @@ chrome.tabs.onActivated.addListener(activeInfo => {
   });
 });
 
-chrome.tabs.onUpdated.addListener((tabID, changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   // remove out-of-date context menus for pages that take time to load
   chrome.contextMenus.removeAll();
 
   if (changeInfo.status === 'complete') {
-    chrome.tabs.sendMessage(tabID, { name: 'get-amp-info' }, response => {
+    chrome.tabs.sendMessage(tabId, { name: 'get-amp-info' }, response => {
       const ampInfo = response.data;
       const browserActionTitle = getBrowserActionTitle(ampInfo);
       updateBrowserAction({
-        tabid: tabID,
+        tabId,
         enabled: !!ampInfo.pageType,
         title: browserActionTitle,
       });
