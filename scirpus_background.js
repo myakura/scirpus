@@ -1,6 +1,6 @@
 'use strict';
 
-const getAMPCacheURL = ampURL => {
+function getAMPCacheURL(ampURL) {
   if (!ampURL.startsWith('http')) {
     throw new Error('Invalid AMP URL: it does not start with HTTP(S)');
   }
@@ -11,7 +11,7 @@ const getAMPCacheURL = ampURL => {
   // for HTTPS AMP pages, the prefix has additional `s/`
   cacheURLPrefix += ampURL.startsWith('https:') ? 's/' : '';
   return ampURL.replace(/https?:\/\//, cacheURLPrefix);
-};
+}
 
 function updateBrowserAction({ tabId, enabled = false, title = `` }) {
   const method = enabled ? `enable` : `disable`;
@@ -39,7 +39,7 @@ function getBrowserActionTitle(ampInfo) {
   return browserActionTitle;
 }
 
-const updateContextMenu = ampInfo => {
+function updateContextMenu(ampInfo) {
   chrome.contextMenus.removeAll();
   if (ampInfo) {
     let contextMenuObject = {};
@@ -61,7 +61,7 @@ const updateContextMenu = ampInfo => {
     }
     chrome.contextMenus.create(contextMenuObject);
   }
-};
+}
 
 chrome.browserAction.onClicked.addListener(tab => {
   const tabID = tab.id;
