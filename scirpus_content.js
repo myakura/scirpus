@@ -9,8 +9,7 @@ class ScirpusContent {
     return htmlElement.hasAttribute('⚡') || htmlElement.hasAttribute('amp');
   }
   hasAMP() {
-    const ampLinkElement = this.ampLinkElement;
-    return !!ampLinkElement;
+    return !!this.ampLinkElement;
   }
   get ampURL() {
     if (!this.hasAMP()) {
