@@ -12,10 +12,7 @@ class ScirpusContent {
     return !!this.ampLinkElement;
   }
   get ampURL() {
-    if (!this.hasAMP()) {
-      return null;
-    }
-    return this.ampLinkElement.href;
+    return this.ampLinkElement?.href ?? null;
   }
   get canonicalURL() {
     const canonicalLinkElement = document.querySelector(
