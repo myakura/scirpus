@@ -100,14 +100,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 chrome.tabs.onActivated.addListener(activeInfo => {
   const tabId = activeInfo.tabId;
   chrome.tabs.sendMessage(tabId, { name: 'get-amp-info' }, response => {
-    const ampInfo = response.data;
-    const browserActionTitle = getBrowserActionTitle(ampInfo);
-    updateBrowserAction({
-      tabId,
-      enabled: !!ampInfo.pageType,
-      title: browserActionTitle,
-    });
-    updateContextMenu(response.data);
+    reflectPageInfo(tabId, response);
   });
 });
 
@@ -117,14 +110,18 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
   if (changeInfo.status === 'complete') {
     chrome.tabs.sendMessage(tabId, { name: 'get-amp-info' }, response => {
-      const ampInfo = response.data;
-      const browserActionTitle = getBrowserActionTitle(ampInfo);
-      updateBrowserAction({
-        tabId,
-        enabled: !!ampInfo.pageType,
-        title: browserActionTitle,
-      });
-      updateContextMenu(response.data);
+      reflectPageInfo(tabId, response);
     });
   }
 });
+
+function reflectPageInfo({ tabId, response }) {
+  const ampInfo = response.data;
+  const browserActionTitle = getBrowserActionTitle(ampInfo);
+  updateBrowserAction({
+    tabId,
+    enabled: !!ampInfo.pageType,
+    title: browserActionTitle,
+  });
+  updateContextMenu(ampInfo);
+}
