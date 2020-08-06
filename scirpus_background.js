@@ -116,11 +116,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 function reflectPageInfo({ tabId, response }) {
-  const ampInfo = response.data;
+  const ampInfo = response?.data;
   const browserActionTitle = getBrowserActionTitle(ampInfo);
   updateBrowserAction({
     tabId,
-    enabled: !!ampInfo.pageType,
+    enabled: !!ampInfo?.pageType,
     title: browserActionTitle,
   });
   updateContextMenu(ampInfo);
