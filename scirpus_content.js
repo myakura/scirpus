@@ -4,6 +4,9 @@ class ScirpusContent {
   get ampLinkElement() {
     return document.querySelector(`link[rel="amphtml"][href]`);
   }
+  get canonicalLinkElement() {
+    return document.querySelector(`link[rel="canonical"][href]`);
+  }
   isAMP() {
     const htmlElement = document.documentElement;
     return htmlElement.hasAttribute('⚡') || htmlElement.hasAttribute('amp');
@@ -15,14 +18,10 @@ class ScirpusContent {
     return this.ampLinkElement?.href ?? null;
   }
   get canonicalURL() {
-    const canonicalLinkElement = document.querySelector(
-      `link[rel="canonical"][href]`,
-    );
-    if (!!canonicalLinkElement && this.isAMP()) {
-      return canonicalLinkElement.href;
-    } else {
+    if (!this.isAMP()) {
       return null;
     }
+    return this.canonicalLinkElement?.href ?? null;
   }
   get pageType() {
     let type = '';
