@@ -24,14 +24,13 @@ class ScirpusContent {
     return this.canonicalLinkElement?.href ?? null;
   }
   get pageType() {
-    let type = '';
-    if (this.hasAMP()) {
-      type = 'hasamp';
-    }
     if (this.isAMP()) {
-      type = 'isamp';
+      return 'isamp';
     }
-    return type;
+    if (this.hasAMP()) {
+      return 'hasamp';
+    }
+    return '';
   }
   get ampInfo() {
     return {
