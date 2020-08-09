@@ -9,8 +9,7 @@ function getCanonicalLinkElement() {
 }
 
 function isAMP() {
-  const htmlElement = document.documentElement;
-  return htmlElement.hasAttribute('⚡') || htmlElement.hasAttribute('amp');
+  return document.documentElement.matches('html[⚡], html[amp]');
 }
 
 function hasAMP() {
