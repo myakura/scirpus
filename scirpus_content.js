@@ -49,12 +49,14 @@ function getAmpInfo() {
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log('scirpus: got a message.', message);
   if (message.name === 'get-amp-info') {
     let ampInfo = null;
     if (hasAMP() || isAMP()) {
       ampInfo = getAmpInfo();
     }
     const response = { name: 'amp-info', data: ampInfo };
+    console.log('scirpus: sending back a response.', response);
     sendResponse(response);
   }
 });
