@@ -1,11 +1,11 @@
 'use strict';
 
 function getAmpLinkElement() {
-  return document.querySelector(`link[rel="amphtml"][href]`);
+  return document.querySelector('link[rel="amphtml"][href]');
 }
 
 function getCanonicalLinkElement() {
-  return document.querySelector(`link[rel="canonical"][href]`);
+  return document.querySelector('link[rel="canonical"][href]');
 }
 
 function isAMP() {

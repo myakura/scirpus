@@ -13,8 +13,8 @@ function getAMPCacheURL(ampURL) {
   return ampURL.replace(/https?:\/\//, cacheURLPrefix);
 }
 
-function updateBrowserAction({ tabId, enabled = false, title = `` }) {
-  const method = enabled ? `enable` : `disable`;
+function updateBrowserAction({ tabId, enabled = false, title = '' }) {
+  const method = enabled ? 'enable' : 'disable';
   const iconPath = enabled
     ? { '19': 'icons/19.png', '38': 'icons/38.png' }
     : { '19': 'icons/19-disabled.png', '38': 'icons/38-disabled.png' };
