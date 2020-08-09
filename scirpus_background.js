@@ -15,13 +15,17 @@ function getAMPCacheURL(ampURL) {
 
 function updateBrowserAction({ tabId, enabled = false, title = '' }) {
   const method = enabled ? 'enable' : 'disable';
-  const iconPath = enabled
-    ? { '19': 'icons/19.png', '38': 'icons/38.png' }
-    : { '19': 'icons/19-disabled.png', '38': 'icons/38-disabled.png' };
-
+  const iconPath = getIconPath(enabled);
+  
   chrome.browserAction[method](tabId);
   chrome.browserAction.setIcon({ tabId, path: iconPath });
   chrome.browserAction.setTitle({ tabId, title });
+}
+
+function getIconPath(enabled = false) {
+  return enabled
+    ? { '19': 'icons/19.png', '38': 'icons/38.png' }
+    : { '19': 'icons/19-disabled.png', '38': 'icons/38-disabled.png' };
 }
 
 function getBrowserActionTitle(ampInfo) {
