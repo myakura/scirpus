@@ -64,6 +64,7 @@ function updateContextMenu(ampInfo) {
 }
 
 chrome.browserAction.onClicked.addListener(tab => {
+  console.log('browser action clicked', tab);
   const tabId = tab.id;
   chrome.tabs.sendMessage(tabId, { name: 'get-amp-info' }, response => {
     const ampInfo = response.data;
@@ -81,6 +82,7 @@ chrome.browserAction.onClicked.addListener(tab => {
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
+  console.log('context menu clicked', tab, info);
   const tabId = tab.id;
   chrome.tabs.sendMessage(tabId, { name: 'get-amp-info' }, response => {
     const ampInfo = response.data;
@@ -97,25 +99,33 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   });
 });
 
-chrome.tabs.onActivated.addListener(activeInfo => {
-  const tabId = activeInfo.tabId;
+chrome.tabs.onActivated.addListener(({ tabId }) => {
+  console.log('tab activated', tabId);
+  console.log('asking AMP information...');
   chrome.tabs.sendMessage(tabId, { name: 'get-amp-info' }, response => {
+    console.log('got a response from', tabId);
     reflectPageInfo({ tabId, response });
   });
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  console.log('tab updated', tabId);
+
   // remove out-of-date context menus for pages that take time to load
   chrome.contextMenus.removeAll();
 
   if (changeInfo.status === 'complete') {
+    console.log('tab', tabId, 'is ready.');
+    console.log('asking AMP information...');
     chrome.tabs.sendMessage(tabId, { name: 'get-amp-info' }, response => {
+      console.log('got a response from', tabId);
       reflectPageInfo({ tabId, response });
     });
   }
 });
 
 function reflectPageInfo({ tabId, response }) {
+  console.log('reflecting AMP information from', tabId, response);
   const ampInfo = response?.data;
   const browserActionTitle = getBrowserActionTitle(ampInfo);
   updateBrowserAction({
