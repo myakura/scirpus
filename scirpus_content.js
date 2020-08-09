@@ -54,6 +54,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (hasAMP() || isAMP()) {
       ampInfo = getAmpInfo();
     }
-    sendResponse({ name: 'amp-info', data: ampInfo });
+    const response = { name: 'amp-info', data: ampInfo };
+    sendResponse(response);
   }
 });
