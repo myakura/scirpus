@@ -100,7 +100,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 chrome.tabs.onActivated.addListener(activeInfo => {
   const tabId = activeInfo.tabId;
   chrome.tabs.sendMessage(tabId, { name: 'get-amp-info' }, response => {
-    reflectPageInfo(tabId, response);
+    reflectPageInfo({ tabId, response });
   });
 });
 
@@ -110,7 +110,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
   if (changeInfo.status === 'complete') {
     chrome.tabs.sendMessage(tabId, { name: 'get-amp-info' }, response => {
-      reflectPageInfo(tabId, response);
+      reflectPageInfo({ tabId, response });
     });
   }
 });
